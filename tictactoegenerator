@@ -1,0 +1,359 @@
+#tic tac toe game
+"""
+Authors: Ben Fisher, Angel Reyes
+Date Created: 12/09/21  
+Date modified: 27/09/21
+version: 0.1
+description: tic tac toe game   
+History: 0.1=File creation
+        0.2=game currently displays 3x3 grid, marks Xs and Os with red/green coloured squares, and quits upon victory, printing a "player 1/player 2 wins" message in terminal
+            needs added: X/O pictures
+            more aesthetic victory message
+            way to prevent squares getting clicked twice
+        0.3=game generator for TTT ML AI 
+        
+"""
+import numpy as np
+import random
+import csv
+#this creates a 3x3 array of zeros 
+def creategrid():
+    grid=np.zeros([3,3])
+    
+    return grid
+
+#this is meant to work out if it is X or O's turn by checking if the turncount number is odd or even, with even being x and odd being O
+def Xturn(turncount):
+    if (turncount % 2) ==0:
+        
+        return True
+
+    else:
+        
+        return False
+
+def winnercheck(grid):
+    rowtotal=[]
+    columntotal=[]
+    for i in range(3):
+        rowval=np.sum(grid[i])
+        colval=np.sum(grid[:,i])
+        rowtotal.append(rowval)
+        columntotal.append(colval)
+
+    bottomleftdiag=grid[0,0]+grid[1,1]+grid[2,2]
+    topleftdiag=grid[2,0]+grid[1,1]+grid[0,2]
+
+    for i in columntotal:
+        if i==3:
+            #print("game over, player 1 wins!!")
+            return True
+        elif i==-3:
+            #print("game over, player 2 wins!!")
+            return True
+    for i in rowtotal:
+        if i==3:
+            #print("game over, player 1 wins!!")
+            return True
+        elif i==-3:
+            #print("game over, player 2 wins!!")
+            return True
+    if bottomleftdiag==3:
+        #print("game over, player 1 wins!!")
+        return True
+    elif topleftdiag==3:
+        #print("game over, player 1 wins!!")
+        return True
+    elif bottomleftdiag==-3:
+        #print("game over, player 2 wins!!")
+        return True
+    elif topleftdiag==-3:
+        #print("game over, player 2 wins!!")
+        return True
+    else:
+        return False
+    
+def almostwin(grid,count):
+    rowtotal=[]
+    columntotal=[]
+    for i in range(3):
+        rowval=np.sum(grid[i])
+        colval=np.sum(grid[:,i])
+        rowtotal.append(rowval)
+        columntotal.append(colval)
+    turn=Xturn(count)
+    bottomleftdiag=grid[0,0]+grid[1,1]+grid[2,2]
+    topleftdiag=grid[2,0]+grid[1,1]+grid[0,2]
+    for i in rowtotal:
+        if i==2 and turn==True:
+            rowcoord=rowtotal.index(int(i))
+            colcoord=np.where(grid[rowcoord]==0)
+            
+            #colcoord=colcoord[0].tolist()
+            nearly=True
+            coords=[int(colcoord[0]),int(rowcoord)]
+            return nearly,coords
+        #elif i==2 and turn==False:
+            rowcoord=rowtotal.index(int(i))
+            colcoord=np.where(grid[rowcoord]==0)
+            
+            #colcoord=colcoord[0].tolist()
+            nearly=True
+            coords=[int(colcoord[0]),int(rowcoord)]
+            return nearly,coords
+        elif i==-2 and turn==False:
+            rowcoord=rowtotal.index(int(i))
+            colcoord=np.where(grid[rowcoord]==0)
+            #colcoord=colcoord[0].tolist()
+            
+            nearly=True
+            coords=[int(colcoord[0]),int(rowcoord)]
+            return nearly,coords
+        #elif i==-2 and turn==True:
+            rowcoord=rowtotal.index(int(i))
+            colcoord=np.where(grid[rowcoord]==0)
+            #colcoord=colcoord[0].tolist()
+            
+            nearly=True
+            coords=[int(colcoord[0]),int(rowcoord)]
+            return nearly,coords
+    for i in columntotal:
+        if i==2 and turn==True:
+            colcoord=columntotal.index(int(i))
+            rowcoord=np.where(grid[:,colcoord]==0)
+            #rowcoord=colcoord[0].tolist()
+            
+            nearly=True
+            coords=[int(colcoord),int(rowcoord[0])]
+            return nearly,coords
+        #elif i==2 and turn==False:
+            colcoord=columntotal.index(int(i))
+            rowcoord=np.where(grid[:,colcoord]==0)
+            #rowcoord=colcoord[0].tolist()
+            
+            nearly=True
+            coords=[int(colcoord),int(rowcoord[0])]
+            return nearly,coords
+        elif i==-2 and turn==False:
+            colcoord=columntotal.index(int(i))
+            rowcoord=np.where(grid[:,colcoord]==0)
+            #rowcoord=colcoord[0].tolist()
+            
+            nearly=True
+            coords=[int(colcoord),int(rowcoord[0])]
+            return nearly,coords
+        #elif i==-2 and turn==True:
+            colcoord=columntotal.index(int(i))
+            rowcoord=np.where(grid[:,colcoord]==0)
+            #rowcoord=colcoord[0].tolist()
+            
+            nearly=True
+            coords=[int(colcoord),int(rowcoord[0])]
+            return nearly,coords
+    if bottomleftdiag==2 and turn==True:
+        list=[grid[0,0],grid[1,1],grid[2,2]]
+        rowcoord=list.index(0)
+        
+        colcoord=rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    #elif bottomleftdiag==2 and turn == False:
+        list=[grid[0,0],grid[1,1],grid[2,2]]
+        rowcoord=list.index(0)
+        
+        colcoord=rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    elif bottomleftdiag==-2 and turn==False:
+        list=[grid[0,0],grid[1,1],grid[2,2]]
+        rowcoord=list.index(0)
+        
+        colcoord=rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    #elif bottomleftdiag==-2 and turn==True:
+        list=[grid[0,0],grid[1,1],grid[2,2]]
+        rowcoord=list.index(0)
+        
+        colcoord=rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    elif topleftdiag==2 and turn==True:
+        list=[grid[0,2],grid[1,1],grid[2,0]]
+        rowcoord=list.index(0)
+        
+        colcoord=2-rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    #elif topleftdiag==2 and turn==False:
+        list=[grid[0,2],grid[1,1],grid[2,0]]
+        rowcoord=list.index(0)
+        
+        colcoord=2-rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    elif topleftdiag==-2 and turn==False:
+        list=[grid[0,2],grid[1,1],grid[2,0]]
+        rowcoord=list.index(0)
+        
+        colcoord=2-rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    #elif topleftdiag==-2 and turn==True:
+        list=[grid[0,2],grid[1,1],grid[2,0]]
+        rowcoord=list.index(0)
+        
+        colcoord=2-rowcoord
+        nearly=True
+        coords=[int(colcoord),int(rowcoord)]
+        return nearly,coords
+    else:
+        return False,[3,3]
+    
+    
+    
+
+def generator(takencoords,grid,count):
+    coordlist=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+    random.shuffle(coordlist)
+    for x in takencoords:
+        coordlist.remove(x)
+    almostres=almostwin(grid,count)
+    almostbool=almostres[0]
+    almostcoord=almostres[1]
+    if almostbool==True:
+        coord=almostcoord
+    else:
+        locno=random.randint(0,(len(coordlist)-1))
+        coord=coordlist[locno]
+    takencoords.append(coord)
+    return coord,takencoords
+
+
+def saveto(data):
+    details = ['game number','XSQ1','XSQ2','XSQ3','XSQ4','XSQ5','XSQ6','XSQ7','XSQ8','XSQ9','OSQ1','OSQ2','OSQ3','OSQ4','OSQ5','OSQ6','OSQ7','OSQ8','OSQ9','oturn','winner']
+    rows = data
+    f=open('X and Y data.csv','w')
+    write=csv.writer(f)
+    write.writerow(details)
+    write.writerows(rows)
+
+
+def clickbox(grid,count,takencoords):
+    coords=generator(takencoords,grid,count)
+    turn=Xturn(count)
+    # User clicks the mouse. Get the position
+    #print("remember this counts row 0 as the top row!")
+    
+    # Change the x/y screen coordinates to grid coordinates
+    column = coords[0][0]
+    row = coords[0][1]
+    
+    if grid[row][column]!=0:
+        print("square already chosen, pick another!")
+    # Set that location to one
+    elif turn==True:
+        grid[row][column]=1  
+    else: 
+        grid[row][column]=-1
+    return grid
+
+def gridprinter(grid):
+    print(grid)
+
+def whowon(count,grid):
+    check=winnercheck(grid)
+    if check==True:
+        if count%2==0:
+            won=2
+        else:
+            won=0
+
+    else:
+        won=1
+    return won
+
+
+def turndatasaver(grid,count):
+    turnbool=Xturn(count)
+    if turnbool == True:
+        turn=0
+    else:
+        turn=1
+    newgrid=np.reshape(grid,9)
+    Xdata=np.where(newgrid==-1,0,newgrid)
+    Odata=np.where(newgrid==1,0,newgrid)
+    Odata=np.where(Odata==-1,1,Odata)
+    Xdata=Xdata.tolist()
+    Odata=Odata.tolist()
+    data=Xdata+Odata
+    data.append(turn)
+    return data
+
+def gamedatasaver(data,winner,runcount):
+
+    for x in range(len(data)):
+        data[x].append(winner)
+        #data[x].append(winner[1])
+        data[x].insert(0,(runcount+1))
+    return data
+#currently [111] and[111]
+#i want [111111]+(+1/-1)
+#then append that to a database 
+def dataflattener(data):
+    flat=[]
+    for sublist in data:
+        for item in sublist:
+            flat.append(item)
+    return flat
+
+
+def main():
+    runcount=0
+    games=[]
+    done=False
+    finished=False
+    while not finished:
+        grid=creategrid()
+        done=False
+        takencoords=[]
+        count=0
+        turndata=[]
+        while not done:
+            grid=clickbox(grid,count,takencoords)
+            data=turndatasaver(grid,count)
+            turndata.append(data)
+            done=winnercheck(grid)
+            count=count+1
+            if count>=9:
+                done=True
+
+            if done==True:
+                winner=whowon(count,grid)
+                gamedata=gamedatasaver(turndata,winner,runcount)
+                games.append(gamedata)
+                runcount+=1
+        if runcount==10000:
+            finished=True
+    flatgames=dataflattener(games)
+    saveto(flatgames)
+
+    
+    
+
+        
+        
+    
+
+
+
+
+if __name__ == "__main__":
+    main()
